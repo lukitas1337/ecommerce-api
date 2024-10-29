@@ -1,12 +1,11 @@
-// express-api/index.js
 const express = require('express');
 const sequelize = require('./db');
-const userRouter = require('./routers/userRouter'); // Import the user router
+const userRouter = require('./routers/userRouter'); 
 
 const app = express();
-app.use(express.json()); // Parse JSON requests
+app.use(express.json()); 
 
-app.use('/users', userRouter); // Use /users route for user endpoints
+app.use('/users', userRouter);
 
 sequelize.sync()
   .then(() => console.log('Database synced'))

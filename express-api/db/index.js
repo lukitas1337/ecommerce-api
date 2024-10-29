@@ -6,8 +6,8 @@ const sequelize = new Sequelize(process.env.NEON, {
   dialect: 'postgres',
   dialectOptions: {
     ssl: {
-      require: true,              // Enforce SSL for Neon connection
-      rejectUnauthorized: false   // Allow self-signed certificates
+      require: true,              
+      rejectUnauthorized: false   
     }
   }
 });

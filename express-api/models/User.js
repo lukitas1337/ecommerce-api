@@ -22,7 +22,7 @@ const User = sequelize.define('User', {
     allowNull: false
   }
 }, {
-  tableName: 'Users'  // Optional: explicitly set the table name
+  tableName: 'Users'
 });
 
 module.exports = User;
