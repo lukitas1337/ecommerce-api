@@ -13,12 +13,12 @@ Order.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'User', 
+      model: 'Users', 
       key: 'id',
     },
   },
   products: {
-    type: DataTypes.JSON, 
+    type: DataTypes.JSON, // Store an array of product objects
     allowNull: false,
   },
   total: {

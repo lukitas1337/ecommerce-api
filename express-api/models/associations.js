@@ -7,10 +7,8 @@ const Category = require('./Category');
 User.hasMany(Order, { foreignKey: 'userId' });
 Order.belongsTo(User, { foreignKey: 'userId' });
 
-// Order to Product association (1-to-many)
-Order.hasMany(Product, { foreignKey: 'orderId' }); // This implies each product can belong to one order
-Product.belongsTo(Order, { foreignKey: 'orderId' }); // This is used if you want to track which order a product belongs to
-
 // Category to Product association
 Category.hasMany(Product, { foreignKey: 'categoryId' });
 Product.belongsTo(Category, { foreignKey: 'categoryId' });
+
+// Note: No direct association between Order and Product, as we will handle products within the Order model itself.

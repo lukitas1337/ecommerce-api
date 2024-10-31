@@ -3,10 +3,12 @@ const sequelize = require('./db');
 const userRouter = require('./routers/userRouter');
 const categoryRouter = require('./routers/categoryRouter'); 
 const productRouter = require('./routers/productRouter');
+const orderRouter = require('./routers/orderRouter');
 
 const User = require('./models/User'); 
 const Category = require('./models/Category'); 
 const Product = require('./models/Product');
+const Order = require('./models/Order');
 
 
 const app = express();
@@ -15,6 +17,7 @@ app.use(express.json());
 app.use('/users', userRouter);
 app.use('/categories', categoryRouter);
 app.use('/products', productRouter);
+app.use('/orders', orderRouter);
 
 
 
