@@ -1,13 +1,10 @@
-const { Order, OrderProduct } = require('../models/Order');
-const User = require('../models/User');
+const Order = require('../models/Order');
 const Product = require('../models/Product');
 
 // GET /orders
 exports.getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.findAll({
-      include: [{ model: Product, through: { attributes: ['quantity'] } }]
-    });
+    const orders = await Order.findAll();
     res.json(orders);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch orders' });
@@ -17,9 +14,7 @@ exports.getAllOrders = async (req, res) => {
 // GET /orders/:id
 exports.getOrderById = async (req, res) => {
   try {
-    const order = await Order.findByPk(req.params.id, {
-      include: [{ model: Product, through: { attributes: ['quantity'] } }]
-    });
+    const order = await Order.findByPk(req.params.id);
     if (order) {
       res.json(order);
     } else {
@@ -35,23 +30,20 @@ exports.createOrder = async (req, res) => {
   try {
     const { userId, products } = req.body;
 
-    const user = await User.findByPk(userId);
-    if (!user) return res.status(400).json({ error: 'User does not exist' });
-
+    // Validate products and calculate total price
     let total = 0;
+    const validProducts = [];
     for (const item of products) {
       const product = await Product.findByPk(item.productId);
-      if (!product) return res.status(400).json({ error: `Product with ID ${item.productId} does not exist` });
-      total += product.price * item.quantity;
+      if (!product) {
+        return res.status(400).json({ error: `Product ID ${item.productId} does not exist` });
+      }
+      total += product.price * item.quantity; // Calculate total price
+      validProducts.push(item);
     }
 
-    const order = await Order.create({ userId, total });
-
-    for (const item of products) {
-      await OrderProduct.create({ orderId: order.id, productId: item.productId, quantity: item.quantity });
-    }
-
-    res.status(201).json({ ...order.toJSON(), products });
+    const order = await Order.create({ userId, products: validProducts, total });
+    res.status(201).json(order);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create order' });
   }
@@ -63,27 +55,24 @@ exports.updateOrder = async (req, res) => {
     const { userId, products } = req.body;
     const order = await Order.findByPk(req.params.id);
 
-    if (!order) return res.status(404).json({ error: 'Order not found' });
-
-    if (userId) {
-      const user = await User.findByPk(userId);
-      if (!user) return res.status(400).json({ error: 'User does not exist' });
-      order.userId = userId;
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
     }
 
+    // Validate products and calculate new total price
     let total = 0;
-    await OrderProduct.destroy({ where: { orderId: order.id } });
+    const validProducts = [];
     for (const item of products) {
       const product = await Product.findByPk(item.productId);
-      if (!product) return res.status(400).json({ error: `Product with ID ${item.productId} does not exist` });
-      total += product.price * item.quantity;
-      await OrderProduct.create({ orderId: order.id, productId: item.productId, quantity: item.quantity });
+      if (!product) {
+        return res.status(400).json({ error: `Product ID ${item.productId} does not exist` });
+      }
+      total += product.price * item.quantity; // Calculate total price
+      validProducts.push(item);
     }
 
-    order.total = total;
-    await order.save();
-
-    res.json({ ...order.toJSON(), products });
+    await order.update({ userId, products: validProducts, total });
+    res.json(order);
   } catch (error) {
     res.status(500).json({ error: 'Failed to update order' });
   }
@@ -93,7 +82,9 @@ exports.updateOrder = async (req, res) => {
 exports.deleteOrder = async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.id);
-    if (!order) return res.status(404).json({ error: 'Order not found' });
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
 
     await order.destroy();
     res.json({ message: 'Order deleted successfully' });

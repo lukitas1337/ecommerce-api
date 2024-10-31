@@ -1,32 +1,36 @@
-// models/Product.js
-const { DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../db');
 
-const Product = sequelize.define('Product', {
+class Product extends Model {}
+
+Product.init({
   id: {
     type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
-    autoIncrement: true
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   description: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING, // Change to TEXT if you expect longer descriptions
+    allowNull: true, // Adjust based on whether description is required
   },
   price: {
     type: DataTypes.FLOAT,
-    allowNull: false
+    allowNull: false,
   },
   categoryId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    // Removed references here
-  }
+    references: {
+      model: 'Categories', 
+      key: 'id',
+    },
+  },
 }, {
-  tableName: 'Products'
+  sequelize,
+  modelName: 'Product',
 });
 
 module.exports = Product;

@@ -1,24 +1,33 @@
-// models/Order.js
-const { DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../db');
 
-const Order = sequelize.define('Order', {
+class Order extends Model {}
+
+Order.init({
   id: {
     type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
-    autoIncrement: true
   },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    // Removed references here
+    references: {
+      model: 'User', 
+      key: 'id',
+    },
+  },
+  products: {
+    type: DataTypes.JSON, 
+    allowNull: false,
   },
   total: {
     type: DataTypes.FLOAT,
-    allowNull: false
-  }
+    allowNull: false,
+  },
 }, {
-  tableName: 'Orders'
+  sequelize,
+  modelName: 'Order',
 });
 
 module.exports = Order;
