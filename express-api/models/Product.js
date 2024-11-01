@@ -14,8 +14,8 @@ Product.init({
     allowNull: false,
   },
   description: {
-    type: DataTypes.STRING, // Change to TEXT if you expect longer descriptions
-    allowNull: true, // Adjust based on whether description is required
+    type: DataTypes.STRING, 
+    allowNull: true,
   },
   price: {
     type: DataTypes.FLOAT,

@@ -18,7 +18,7 @@ Order.init({
     },
   },
   products: {
-    type: DataTypes.JSON, // Store an array of product objects
+    type: DataTypes.JSON,
     allowNull: false,
   },
   total: {

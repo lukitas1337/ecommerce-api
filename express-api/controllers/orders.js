@@ -1,7 +1,6 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 
-// GET /orders
 exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.findAll();
@@ -11,7 +10,6 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
-// GET /orders/:id
 exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.id);
@@ -25,12 +23,10 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
-// POST /orders
 exports.createOrder = async (req, res) => {
   try {
     const { userId, products } = req.body;
 
-    // Validate products and calculate total price
     let total = 0;
     const validProducts = [];
     for (const item of products) {
@@ -38,7 +34,7 @@ exports.createOrder = async (req, res) => {
       if (!product) {
         return res.status(400).json({ error: `Product ID ${item.productId} does not exist` });
       }
-      total += product.price * item.quantity; // Calculate total price
+      total += product.price * item.quantity;
       validProducts.push(item);
     }
 
@@ -49,7 +45,6 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// PUT /orders/:id
 exports.updateOrder = async (req, res) => {
   try {
     const { userId, products } = req.body;
@@ -59,7 +54,6 @@ exports.updateOrder = async (req, res) => {
       return res.status(404).json({ error: 'Order not found' });
     }
 
-    // Validate products and calculate new total price
     let total = 0;
     const validProducts = [];
     for (const item of products) {
@@ -67,7 +61,7 @@ exports.updateOrder = async (req, res) => {
       if (!product) {
         return res.status(400).json({ error: `Product ID ${item.productId} does not exist` });
       }
-      total += product.price * item.quantity; // Calculate total price
+      total += product.price * item.quantity; 
       validProducts.push(item);
     }
 
@@ -78,7 +72,6 @@ exports.updateOrder = async (req, res) => {
   }
 };
 
-// DELETE /orders/:id
 exports.deleteOrder = async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.id);

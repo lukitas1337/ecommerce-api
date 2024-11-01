@@ -1,7 +1,6 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Use the NEON connection string from .env
 const sequelize = new Sequelize(process.env.NEON, {
   dialect: 'postgres',
   dialectOptions: {

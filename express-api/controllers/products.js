@@ -1,7 +1,6 @@
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 
-// GET /products
 exports.getAllProducts = async (req, res) => {
   try {
     const { categoryId } = req.query;
@@ -13,7 +12,6 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-// GET /products/:id
 exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
@@ -27,7 +25,6 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-// POST /products
 exports.createProduct = async (req, res) => {
   try {
     const { name, description, price, categoryId } = req.body;
@@ -45,7 +42,6 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-// PUT /products/:id
 exports.updateProduct = async (req, res) => {
   try {
     const { name, description, price, categoryId } = req.body;
@@ -55,7 +51,6 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    // Check if the category exists
     if (categoryId) {
       const category = await Category.findByPk(categoryId);
       if (!category) {
@@ -70,7 +65,6 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-// DELETE /products/:id
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);

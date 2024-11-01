@@ -22,7 +22,6 @@ app.use('/orders', orderRouter);
 
 
 
-// Sync the database models
 sequelize.sync()
   .then(() => console.log('Database synced'))
   .catch(err => console.log('Error syncing database:', err));
